@@ -54,7 +54,7 @@ jobs:
         - Triggered by release: ${{ github.event.release.tag_name }}
         - Release: ${{ github.event.release.html_url }}"
         # Determine the default branch and push to it
-        DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+        DEFAULT_BRANCH=$(git remote show origin | grep "HEAD branch" | cut -d ":" -f 2 | tr -d ' ')
         git push origin HEAD:$DEFAULT_BRANCH
 
     - name: Create TypeScript client archive
