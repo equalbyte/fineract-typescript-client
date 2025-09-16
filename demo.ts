@@ -64,7 +64,7 @@ async function runDemo() {
 
     // 4. Get savings products
     console.log('\n🏦 4. Getting Savings Products...');
-    const savingsProductsResponse = await savingsProductApi.retrieveAllSavingsProducts();
+    const savingsProductsResponse = await savingsProductApi.retrieveAll34();
     console.log(`✅ Found ${savingsProductsResponse.data?.length || 0} savings products`);
 
     if (savingsProductsResponse.data && savingsProductsResponse.data.length > 0) {
@@ -74,7 +74,7 @@ async function runDemo() {
 
     // 5. Get loans
     console.log('\n📊 5. Getting Loans...');
-    const loansResponse = await loansApi.retrieveAllLoans();
+    const loansResponse = await loansApi.retrieveAll27();
     console.log(`✅ Found ${loansResponse.data?.length || 0} loans`);
 
     if (loansResponse.data && loansResponse.data.length > 0) {
