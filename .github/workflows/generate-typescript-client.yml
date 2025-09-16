@@ -5,6 +5,10 @@ on:
     types: [ published, created ]
   workflow_dispatch: # Allow manual triggering
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   generate-client:
     runs-on: ubuntu-latest
