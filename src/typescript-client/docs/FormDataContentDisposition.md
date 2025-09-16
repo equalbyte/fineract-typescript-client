@@ -1,0 +1,34 @@
+# FormDataContentDisposition
+
+
+## Properties
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**creationDate** | **string** |  | [optional] [default to undefined]
+**fileName** | **string** |  | [optional] [default to undefined]
+**modificationDate** | **string** |  | [optional] [default to undefined]
+**name** | **string** |  | [optional] [default to undefined]
+**parameters** | **{ [key: string]: string; }** |  | [optional] [default to undefined]
+**readDate** | **string** |  | [optional] [default to undefined]
+**size** | **number** |  | [optional] [default to undefined]
+**type** | **string** |  | [optional] [default to undefined]
+
+## Example
+
+```typescript
+import { FormDataContentDisposition } from 'fineract-typescript-client';
+
+const instance: FormDataContentDisposition = {
+    creationDate,
+    fileName,
+    modificationDate,
+    name,
+    parameters,
+    readDate,
+    size,
+    type,
+};
+```
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

@@ -1,0 +1,86 @@
+name: Generate TypeScript Client
+
+on:
+  release:
+    types: [ published, created ]
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  generate-client:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Install OpenAPI Generator CLI
+      run: npm install -g @openapitools/openapi-generator-cli
+
+    - name: Generate TypeScript Client
+      run: npm run generate-typescript-client
+      env:
+        JAVA_OPTS: "-Xmx4G"
+
+    - name: Check for changes
+      id: verify-changed-files
+      run: |
+        if [ -n "$(git status --porcelain)" ]; then
+          echo "changed=true" >> $GITHUB_OUTPUT
+          echo "Generated files have changes"
+          git status --porcelain
+        else
+          echo "changed=false" >> $GITHUB_OUTPUT
+          echo "No changes detected"
+        fi
+
+    - name: Commit and push changes
+      if: steps.verify-changed-files.outputs.changed == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add src/typescript-client/
+        git commit -m "Auto-generate TypeScript client for release ${{ github.event.release.tag_name }}
+
+        - Generated from fineract.json
+        - Triggered by release: ${{ github.event.release.tag_name }}
+        - Release: ${{ github.event.release.html_url }}"
+        git push
+
+    - name: Create TypeScript client archive
+      if: steps.verify-changed-files.outputs.changed == 'true'
+      run: |
+        cd src/typescript-client
+        tar -czf ../../typescript-client-${{ github.event.release.tag_name }}.tar.gz .
+        cd ../..
+        zip -r typescript-client-${{ github.event.release.tag_name }}.zip src/typescript-client/
+
+    - name: Upload as release assets
+      if: steps.verify-changed-files.outputs.changed == 'true'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./typescript-client-${{ github.event.release.tag_name }}.tar.gz
+        asset_name: typescript-client-${{ github.event.release.tag_name }}.tar.gz
+        asset_content_type: application/gzip
+
+    - name: Upload ZIP as release asset
+      if: steps.verify-changed-files.outputs.changed == 'true'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./typescript-client-${{ github.event.release.tag_name }}.zip
+        asset_name: typescript-client-${{ github.event.release.tag_name }}.zip
+        asset_content_type: application/zip
